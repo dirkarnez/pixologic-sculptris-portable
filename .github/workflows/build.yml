@@ -20,7 +20,7 @@ jobs:
       - name: installer
         shell: cmd
         run: |
-          curl https://softpedia-secure-download.com/dl/c2b95de7b678b30d55683705cba63fa2/678a1d73/100162252/software/multimedia/graphic/Sculptris_Installer_WIN.exe -L --output installer.exe &&^
+          curl https://softpedia-secure-download.com/dl/4ce908aacf73a36a77f67d4ec1870f9a/678a41e2/100162252/software/multimedia/graphic/Sculptris_Installer_WIN.exe -L --output installer.exe &&^
           dir
           
       - name: uncompress msi
