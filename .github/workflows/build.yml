@@ -1,0 +1,46 @@
+name: portable-release-actions-workflow
+on:
+  push:
+    # Sequence of patterns matched against refs/tags
+    tags:
+      - '*' # Push events to matching v*, i.e. v1.0, v20.15.10
+      
+permissions:
+  contents: write
+  
+jobs:
+  build:
+    name: Create Release
+    runs-on: windows-latest
+    env:
+      targetZip: pixologic-sculptris-portable-${{ github.ref_name }}.zip
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: installer
+        shell: cmd
+        run: |
+          curl https://softpedia-secure-download.com/dl/c2b95de7b678b30d55683705cba63fa2/678a1d73/100162252/software/multimedia/graphic/Sculptris_Installer_WIN.exe -L --output installer.exe &&^
+          dir
+          
+      - name: uncompress msi
+        shell: cmd
+        run: |
+          .\installer.exe --mode unattended --prefix installation
+
+      - shell: cmd
+        run: xcopy /H /Y /C "Sculptris.exe.Portable.cmd" "installation"
+          
+      - name: Archive Release
+        uses: thedoctor0/zip-release@master
+        with:
+          type: 'zip'
+          directory: "installation"
+          filename: "${{ env.targetZip }}"
+          
+      - name: Release prebuilt
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: "installation/${{ env.targetZip }}"
+          allowUpdates: true
+          token: ${{ secrets.GITHUB_TOKEN }}
